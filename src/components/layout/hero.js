@@ -28,7 +28,7 @@ export default function Hero() {
                 </div>
             </div>
             <div className="relative">
-                <Image src="/pizza.png" alt="pizza" layout="fill" objectFit="contain" />
+                <Image src="/pizza.png" alt="pizza" layout="fill" objectFit="contain" className="filter brightness-75 contrast-200" />
             </div>
         </section>
     );
