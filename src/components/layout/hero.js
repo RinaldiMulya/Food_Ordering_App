@@ -17,13 +17,13 @@ export default function Hero() {
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 transform transition-transform duration-1000 group-hover:translate-x-32 group-hover:text-gray-800 ">
                             <SolidIcon className="h-6 w-6" />
                         </span>
-                        <span className="relative group-hover:text-gray-800">Order Now</span>
+                        <span className="relative text-nowrap group-hover:text-gray-800">Order Now</span>
                     </button>
                     <button className="font-bold flex items-center gap-2 group text-gray-500">
                         <span className="transform transition-transform duration-1000 group-hover:translate-x-32 group-hover:text-primary">
                             <OutlineIcon className="h-6 w-6"/>
                         </span>
-                        <span className="relative group-hover:text-primary">Learn More</span>
+                        <span className="relative text-nowrap group-hover:text-primary">Learn More</span>
                     </button>
                 </div>
             </div>

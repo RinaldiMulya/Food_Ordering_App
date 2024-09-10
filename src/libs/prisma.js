@@ -4,8 +4,15 @@ import bcrypt from 'bcrypt';
 const prisma = new PrismaClient().$extends({
     // add prisma hooks
     // add bcrypt hashing middleware
-    // 
-    query:{
+    $on: {
+        connect: () => {
+            console.log('Database terhubung!');
+        },
+        disconnect: () => {
+            console.log('Database tidak terhubung!');
+        },
+    },
+    query: {
         user: {
             async create({ args, query }) {
                 const hashedPassword = await bcrypt.hash(args.data.password, 10);

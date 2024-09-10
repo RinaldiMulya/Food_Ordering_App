@@ -1,10 +1,10 @@
-import prisma from '../../../libs/prisma';
-
+import prisma from "../../../libs/prisma";
 export async function POST(req) {
     try {
         const body = await req.json();
         const createUser = await prisma.user.create({
             data: {
+                username: body.username,
                 email: body.email,
                 password: body.password,
             },
