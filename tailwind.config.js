@@ -8,10 +8,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#f97316",
-        secondary: "#64748b",
-        accent: "#3b82f6",
-        dark: "#0f172a",
+        primary: "#393E46", //black
+        secondary: "#6D9886", //green
+        accent: "#F7F7F7", //white
+        dark: "#ECE8DD", //beige
+      },
+      boxShadow: {
+        '4xl': '0 40px 70px rgba(0, 0, 0, 0.35)', // Shadow besar ke-4
+        '5xl': '0 50px 80px rgba(0, 0, 0, 0.4)',  // Shadow paling besar ke-5
       },
     },
   },

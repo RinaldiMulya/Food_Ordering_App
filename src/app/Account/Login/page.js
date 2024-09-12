@@ -29,7 +29,7 @@ function LoginPage() {
 
     return (
         <section className="flex flex-col justify-center items-center mt-20">
-            <h1 className="text-4xl font-bold mb-8 text-white">LOGIN</h1>
+            <h1 className="text-4xl font-bold mb-8 text-primary">LOGIN</h1>
 
             {error && (
                 <div className="text-xl italic font-bold mb-8 text-red-500 text-center">
@@ -37,7 +37,7 @@ function LoginPage() {
                 </div>
             )}
 
-            <form className="block max-w-xl w-full mx-auto p-10 rounded-2xl custom-shadow bg-slate-800" onSubmit={handleFormSubmit} >
+            <form className="block max-w-xl w-full mx-auto p-10 rounded-2xl custom-shadow bg-primary" onSubmit={handleFormSubmit} >
                 {/* Email */}
                 <div className="mb-4">
                     <input
@@ -67,7 +67,7 @@ function LoginPage() {
                 {/* Group Button */}
                 <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white p-2 rounded mb-4"
+                    className="w-full text-white p-2 rounded mb-4"
                     disabled={loggingIn}>
                     {loggingIn ? "Logging in..." : "Login"}
                 </button>

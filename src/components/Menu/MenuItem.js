@@ -2,7 +2,7 @@ import { PlusCircleIcon } from '@heroicons/react/24/solid';
 
 export default function MenuItem() {
     return (
-        <div className="w-11/12 p-4 rounded-lg flex flex-col text-center bg-gray-200 group hover:bg-white hover:shadow-xl hover:shadow-black/25 transition-all cursor-pointer">
+        <div className="w-11/12 p-4 rounded-lg flex flex-col text-center bg-gray-200 group hover:bg-secondary hover:shadow-xl hover:shadow-black/25 transition-all cursor-pointer">
             <div className="w-40 h-36 mx-auto">
                 <img
                     src="/pizza.png"
@@ -13,7 +13,7 @@ export default function MenuItem() {
             <h4 className="font-semibold text-xl my-3">Pepperoni Pizza</h4>
             <div className="items-center text-sm px-2 mt-2">
                 <div className="border border-gray-800" />
-                <div className="text-gray-500 font-semibold flex justify-between text-nowrap gap-5 my-2">
+                <div className="text-primary font-semibold flex justify-between text-nowrap gap-5 my-2">
                     <p>60 Calories</p>
                     <ul className="list-disc">
                         <li>4 person</li>
@@ -24,7 +24,7 @@ export default function MenuItem() {
 
             <button className="flex justify-around items-center gap-8 px-1 mt-4">
                 <p className="font-semibold">$12.99</p>
-                <PlusCircleIcon className="h-8 w-8 text-primary" />
+                <PlusCircleIcon className="h-8 w-8 text-primary hover:tranform hover:rotate-180 duration-300 ease-in"/>
             </button>
         </div>
     );

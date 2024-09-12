@@ -63,7 +63,7 @@ export default function AccountPage() {
 
     return (
         <section className="flex flex-col justify-center items-center mt-20">
-            <h1 className="text-4xl italic font-bold mb-8 text-white">Register Here !</h1>
+            <h1 className="text-4xl italic font-bold mb-8 text-primary">Register Here !</h1>
 
             {error && (
                 <div className="text-xl italic font-bold mb-8 text-red-500 text-center">
