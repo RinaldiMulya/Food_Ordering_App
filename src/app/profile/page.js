@@ -23,20 +23,13 @@ function ProfilePage() {
         })
     }
 
-
-
-
-
-
-
-
-
     useEffect(() => {
         if (session) {
             setName(session.user.name || "");
             setEmail(session.user.email || "");
         }
     }, [session]);
+    
 
     if (status === "loading") {
         return "Loading...";
