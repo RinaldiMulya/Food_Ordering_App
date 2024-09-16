@@ -25,15 +25,16 @@ function Logo() {
     );
 }
 
-// User Actions Component
-function UserActions({ isAuthenticated, userName }) {
+function UserActions({ isAuthenticated, username }) {
+    const { data: session } = useSession();
+
     return (
         <nav className="flex items-center gap-4 relative">
             {isAuthenticated ? (
                 <div className="relative group">
                     <Link href="/profile" className="flex items-center gap-2" aria-haspopup="true" aria-expanded="false">
                         <UserCircleIcon className="h-6 w-6" strokeWidth={2} />
-                        <span>{userName}</span>
+                        <span>{username}</span> 
                     </Link>
 
                     {/* Dropdown Menu */}
@@ -46,7 +47,7 @@ function UserActions({ isAuthenticated, userName }) {
                                 type="button"
                                 className="w-full px-4 py-2 text-sm text-white hover:bg-secondary rounded-lg"
                                 role="menuitem">
-                                {userName}
+                                {username}
                             </button>
                         </a>
                         <button
@@ -73,19 +74,19 @@ function UserActions({ isAuthenticated, userName }) {
 
 // Main Header Component
 export default function Header() {
-    const { data: session, status } = useSession();
+    const { status, data: session } = useSession();
     const isAuthenticated = status === "authenticated";
 
-    let userName = session?.user?.name;
-    if (userName && userName.includes(" ")) {
-        userName = userName.split(" ")[0];
+    let username = session?.user?.name || session?.user?.email;
+    if (username && username.includes(" ")) {
+        username = username.split(" ")[0];
     }
 
     return (
         <header className="h-20 w-full px-5 flex items-center justify-between text-primary">
             <Navigation />
             <Logo />
-            <UserActions isAuthenticated={isAuthenticated} userName={userName} />
+            <UserActions isAuthenticated={isAuthenticated} username={username} />
         </header>
     );
 }

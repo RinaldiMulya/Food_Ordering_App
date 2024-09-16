@@ -26,7 +26,7 @@ export default function AccountPage() {
         }
 
         // Submit data ke server
-        await fetch('/api/register', {
+        await fetch('/api/auth/register', {
             method: 'POST',
             body: JSON.stringify({ username, email, password }),
             headers: {
@@ -34,7 +34,12 @@ export default function AccountPage() {
                 'Accept': 'application/json'
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Not OK Response');
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Form submitted:', data);
                 setUsername('');
@@ -72,7 +77,7 @@ export default function AccountPage() {
             )}
 
             {showSuccessMessage && userCreated && (
-                <div className="text-xl italic font-bold mb-8 text-white text-center">
+                <div className="text-xl italic font-bold mb-8 text-rose-800 text-center">
                     User created successfully,<br /> now you can{' '}
                     <Link className="underline" href={'/Account/Login'}>Login</Link></div>
             )}

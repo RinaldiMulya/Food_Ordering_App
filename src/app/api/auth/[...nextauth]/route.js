@@ -2,10 +2,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
 import prisma from "../../../../libs/prisma";
 import bcrypt from "bcrypt";
-import GoogleProvider from "next-auth/providers/google"; 
+import GoogleProvider from "next-auth/providers/google";
 
 const handler = NextAuth({
-  secret: process.env.SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   trustHost: process.env.NODE_ENV === "development",
   providers: [
     GoogleProvider({
@@ -27,13 +27,11 @@ const handler = NextAuth({
         const email = credentials?.email;
         const password = credentials?.password;
 
-        // Query your Prisma database to find a user with the given email
         const user = await prisma.user.findFirst({
           where: {
             email,
           },
         });
-
         if (!user) {
           return null; // User not found
         }
@@ -45,14 +43,60 @@ const handler = NextAuth({
         }
 
         // Return the user object to authenticate
-        return user
+        return {
+          id: user.id,
+          name: user.username,
+          email: user.email,
+          username: user.username,
+        }
       },
     }),
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Redirect user to the home page after login
       return baseUrl; // Will redirect to the base URL ("/")
+    },
+    async signIn({ user, account }) {
+      if (account.provider === "google") {
+        // Handle user logic for Google
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+
+        if (!existingUser) {
+          // User not found, create a new user
+          await prisma.user.create({
+            data: {
+              email: user.email,
+              username: user.name || "Google User",
+              password: "", // or some default value
+            },
+          });
+        }
+        return {
+          id: user.id,
+          name: user.username,
+          email: user.email,
+          username: user.username,
+        };
+      }
+      return true; // Continue with the sign-in
+    },
+    callbacks: {
+      async session({ session, token }) {
+        // Check if user is authenticated via credentials or google
+        const userInDb = await prisma.user.findUnique({
+          where: { email: session.user.email },
+        });
+
+        // Add user information to the session object
+        if (userInDb) {
+          session.user.id = userInDb.id;
+          session.user.username = userInDb.username || "Unknown"; // Ensure username is available
+        }
+
+        return session;
+      },
     },
   },
 });

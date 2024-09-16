@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -6,52 +6,94 @@ import { useState, useEffect } from "react";
 
 function ProfilePage() {
     const { data: session, status } = useSession();
-    const [name, setName] = useState(session?.user?.name || "");
-    const [email, setEmail] = useState(session?.user?.email || "");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [postcode, setPostcode] = useState("");
+    const [postCode, setPostCode] = useState("");
+    const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
+    const [country, setCountry] = useState("");
     const [showWarning, setShowWarning] = useState(false);
 
-    function handleProfileUpdate(e) {
-        e.preventDefault();
-        fetch("/api/profile", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name, email, phoneNumber, postcode, }),
-        })
-    }
-
     useEffect(() => {
-        if (session) {
-            setName(session.user.name || "");
-            setEmail(session.user.email || "");
+        if (session?.user?.email) {
+            async function fetchUserData() {
+                try {
+                    const response = await fetch(`/api/profile?email=${session.user.email}`);
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUsername(userData.username || "");
+                        setEmail(userData.email || "");
+                        setPhoneNumber(userData.phoneNumber || "");
+                        setPostCode(userData.postCode || "");
+                        setAddress(userData.address || "");
+                        setCity(userData.city || "");
+                        setCountry(userData.country || "");
+                    } else {
+                        console.error("Failed to fetch user data:", response.status);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+            fetchUserData();
         }
-    }, [session]);
-    
+    }, [session?.user?.email]);
+
+    async function handleProfileUpdate(e) {
+        e.preventDefault();
+        try {
+            const response = await fetch("/api/profile", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    email,
+                    phoneNumber,
+                    address,
+                    city,
+                    country,
+                    postCode,
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Profile updated successfully!');
+            } else {
+                console.error("Failed to update profile:", data.message);
+                alert('Profile update failed!');
+            }
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            alert('Profile update failed!');
+        }
+    }
 
     if (status === "loading") {
-        return "Loading...";
+        return <p>Loading...</p>;
     }
+
     if (status === "unauthenticated") {
-        return redirect("/login");
+        redirect("/login");
     }
+
     const userImage = session?.user?.image;
 
     const handlePhoneNumberChange = (e) => {
-        const value = e.target.value.replace(/\D/g, ""); // Menghapus karakter non-angka
+        const value = e.target.value.replace(/\D/g, "");
         setPhoneNumber(value);
     };
-    const handlePostcodeChange = (e) => {
-        const value = e.target.value.replace(/\D/g, ""); // Menghapus karakter non-angka
-        setPostcode(value);
-    };
 
-    // menampilkan peringatan
-    const handleNameChange = (e) => {
-        setName(e.target.value);
-        if (e.target.value !== session?.user?.name) {
+    const handlePostcodeChange = (e) => {
+        const value = e.target.value.replace(/\D/g, "");
+        setPostCode(value);
+    }
+    const handleUsernameChange = (e) => {
+        setUsername(e.target.value);
+        if (e.target.value !== session?.user?.username) {
             setShowWarning(true);
         } else {
             setShowWarning(false);
@@ -65,7 +107,7 @@ function ProfilePage() {
                 {/* Bagian Gambar */}
                 <div className="flex flex-col w-1/2 ml-24 items-center justify-center space-y-8">
                     <Image
-                        src={userImage || '/images/default-avatar.png'}
+                        src={userImage || '/pizza.png'}
                         alt="avatar"
                         width={200}
                         height={200}
@@ -86,15 +128,15 @@ function ProfilePage() {
                     <div>
                         <input
                             type="text"
-                            value={name}
-                            onChange={handleNameChange}
+                            value={username}
+                            onChange={handleUsernameChange}
                             className="w-full px-4 py-2 border border-dark rounded-lg focus:outline-none focus:border-primary"
-                            placeholder="First and Last Name"
+                            placeholder="Username"
                         />
-                        {/* Tampilkan peringatan jika user mencoba mengubah nama */}
+                        {/* Show warning if username is changed */}
                         {showWarning && (
                             <p className="text-sm text-red-500 mt-2">
-                                Ini merupakan nama penerima pesanan.
+                                ini nama penerima pesanan
                             </p>
                         )}
                     </div>
@@ -103,7 +145,7 @@ function ProfilePage() {
                             readOnly
                             type="email"
                             value={email}
-                            disabled={true}
+                            disabled
                             className="w-full px-4 py-2 border border-dark rounded-lg focus:outline-none focus:border-primary cursor-disabled"
                         />
                     </div>
@@ -121,6 +163,8 @@ function ProfilePage() {
                     <div>
                         <input
                             type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
                             className="w-full px-4 py-2 border border-primary rounded-lg focus:outline-none focus:border-primary"
                             placeholder="Street address"
                         />
@@ -129,7 +173,7 @@ function ProfilePage() {
                         <div>
                             <input
                                 type="text"
-                                value={postcode}
+                                value={postCode}
                                 onChange={handlePostcodeChange}
                                 inputMode="numeric"
                                 pattern="[0-9]*"
@@ -140,6 +184,8 @@ function ProfilePage() {
                         <div>
                             <input
                                 type="text"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
                                 className="w-full px-4 py-2 border border-primary rounded-lg focus:outline-none focus:border-primary"
                                 placeholder="City"
                             />
@@ -148,6 +194,8 @@ function ProfilePage() {
                     <div>
                         <input
                             type="text"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
                             className="w-full px-4 py-2 border border-primary rounded-lg focus:outline-none focus:border-primary"
                             placeholder="Country"
                         />
